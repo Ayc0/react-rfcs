@@ -164,9 +164,9 @@ function _useLongPoll(url, delay) {
 ```
 
 But this has a few downsides:
-1. it changes the name of the hooks, so for error handling and similar, it can add some additional cognitive costs for devs,
-2. can we parse 3rd party code? When wrapping hooks used in your app, you can automatically wrap all the used ones, so it's _fairly easy_. But detecting all the defined hooks can be more complicated (specifically as someone could name a regular function `useHello` without it being a hook),
-3. in this example, we can see that we created the dependency array `[url, delay]`. But with the original example, it created `[]` (because the variables were fully static.) So this creates more memory load as we aren't tracking exactly how those hooks are used, but how they are defined.
+1. It changes the name of the hooks, so for error handling and similar, it can add some additional cognitive costs for devs,
+2. Can we parse 3rd party code? When wrapping hooks used in your app, you can automatically wrap all the used ones, so it's _fairly easy_. But detecting all the defined hooks can be more complicated (specifically as someone could name a regular function `useHello` without it being a hook),
+3. In this example, we can see that we created the dependency array `[url, delay]`. But with the original example, it created `[]` (because the variables were fully static.) So this creates more memory load as we aren't tracking exactly how those hooks are used, but how they are defined.
 
 ## Wrap as `useMemo`
 
