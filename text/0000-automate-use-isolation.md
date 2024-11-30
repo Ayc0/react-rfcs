@@ -182,7 +182,7 @@ function MyApp() {
 }
 ```
 
-will be transformed into:
+will be transformed into ([see playground](https://playground.react.dev/#N4Igzg9grgTgxgUxALhAMygOzgFwJYSYAEAsgJ4CCADlQBQCURwAOsUXIWDkQNpcCGOBAF0iAXiIAlBP1wA6KGAQBlHIIS1gAX3qtWRdp24cqeBABNxUmfMUISCALYRaDcQD4iAKWUB5AHJyXDB4mADmeGhktAJC9AA0vLEiupj6RDAIOLDEADxgVPyY7sAmZuZauQD0BUXurFqsIFpAA)):
 
 ```jsx
 function MyApp() {
