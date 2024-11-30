@@ -95,6 +95,8 @@ Also, this would add 1 `useIsolation` call in all components, adding an extra ca
 
 # Alternatives
 
+## Wrap at definition
+
 Instead of wrapping the call sites like proposed, potentially we could wrap the hooks at their definitions, like so:
 
 ```jsx
@@ -166,6 +168,80 @@ But this has a few downsides:
 2. can we parse 3rd party code? When wrapping hooks used in your app, you can automatically wrap all the used ones, so it's _fairly easy_. But detecting all the defined hooks can be more complicated (specifically as someone could name a regular function `useHello` without it being a hook),
 3. in this example, we can see that we created the dependency array `[url, delay]`. But with the original example, it created `[]` (because the variables were fully static.) So this creates more memory load as we aren't tracking exactly how those hooks are used, but how they are defined.
 
+## Wrap as `useMemo`
+
+I lied a bit about the React compiler: it does **not** add `useMemo`. Instead the following code:
+
+```jsx
+function MyApp() {
+  const [state] = React.useState({})
+
+  const copied = React.useMemo(() => JSON.stringify(state), [state])
+
+  return <span>{copied}</span>
+}
+```
+
+will be transformed into:
+
+```jsx
+function MyApp() {
+  const $ = _c(5);
+  let t0;
+  if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+    t0 = {};
+    $[0] = t0;
+  } else {
+    t0 = $[0];
+  }
+  const [state] = React.useState(t0);
+  let t1;
+  let t2;
+  if ($[1] !== state) {
+    t2 = JSON.stringify(state);
+    $[1] = state;
+    $[2] = t2;
+  } else {
+    t2 = $[2];
+  }
+  t1 = t2;
+  const copied = t1;
+  let t3;
+  if ($[3] !== copied) {
+    t3 = <span>{copied}</span>;
+    $[3] = copied;
+    $[4] = t3;
+  } else {
+    t3 = $[4];
+  }
+  return t3;
+}
+```
+
+And this piece of code is the equivalent of `const copied = React.useMemo(() => JSON.stringify(state), [state])`:
+
+```jsx
+  let t1;
+  let t2;
+  if ($[1] !== state) {
+    t2 = JSON.stringify(state);
+    $[1] = state;
+    $[2] = t2;
+  } else {
+    t2 = $[2];
+  }
+  t1 = t2;
+  const copied = t1;
+```
+
+Potentially, if the React team ships the fact that `useMemo` can be used to wrap hooks too, we could use the same syntax for this RFC.
+
+I don't think it's possible (which is why I didn't start with this proposal), because in https://github.com/reactjs/rfcs/pull/257, I'm mentioning:
+
+> 2. Create a new internal _call scope_ (like a component)
+
+And adding those `if`s in the code can't. You need to, at least, add flags to mention that you're entering in a new component / hook _scope_. So it would be possible but with more changes to the compiler (which is above what I understand so I won't go into details.)
+
 # Adoption strategy
 
 I have no idea.
@@ -176,7 +252,8 @@ As the compiler is a bit magical, I don’t if we need to teach that in a specif
 
 # Unresolved questions
 
-Do we even want to apply the RFC https://github.com/reactjs/rfcs/pull/257?
-Is it something that the compiler can do?
-Is it the best way of automatically applying `useIsolation`?
-Is it really worth it?
+- Do we even want to apply the RFC https://github.com/reactjs/rfcs/pull/257?
+- Is it something that the compiler can do?
+- Is it the best way of automatically applying `useIsolation`?
+- If the React team prefers the `useMemo` approach, does it fit how the compiler already handles `useMemo`?
+- Is it really worth it?
