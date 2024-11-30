@@ -240,7 +240,7 @@ I don't think it's possible (which is why I didn't start with this proposal), be
 
 > 2. Create a new internal _call scope_ (like a component)
 
-And you can't do this by only adding those `if`s. Instead you at least need to add _flags_ indicating you're entering in a new component / hook _scope_. So it would be possible but with more changes to the compiler (which is above what I understand so I won't go into details.)
+And you can't do this by only adding those `if`s. Instead you at least need to add _flags_ indicating you're entering in a new component / hook _scope_. So more changes would have to be done to the compiler to make those work (which is above what I understand so I won't go into details.)
 
 # Adoption strategy
 
