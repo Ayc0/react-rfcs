@@ -234,13 +234,14 @@ And this piece of code is the equivalent of `const copied = React.useMemo(() => 
   const copied = t1;
 ```
 
-Potentially, if the React team ships the fact that `useMemo` can be used to wrap hooks too, we could use the same syntax for this RFC.
+Potentially, if the React team ships the fact that `useMemo` can be used to wrap hooks too, we could use the same syntax (with the tags `$[n]` and variables `tn`) for this RFC too.
 
-I don't think it's possible (which is why I didn't start with this proposal), because in https://github.com/reactjs/rfcs/pull/257, I'm mentioning:
+I don't think it's currently possible (with the current implementation of the compiler, I mean), because in https://github.com/reactjs/rfcs/pull/257, I'm mentioning:
 
 > 2. Create a new internal _call scope_ (like a component)
 
-And you can't do this by only adding those `if`s. Instead you at least need to add _flags_ indicating you're entering in a new component / hook _scope_. So more changes would have to be done to the compiler to make those work (which is above what I understand so I won't go into details.)
+And to the best of my knowledge, using those `if`s can't let you create those _call scope_. Maybe the compiler can be updated to allow defining them (I have no idea how, I don't have the knowledge about how React would define them / expose them.)
+But if we just look at the current compiler output, I believe that addings those `$[n]` would be harder that keeping in the compiled code calls to `useMemo` **for hooks** optimizations.
 
 # Adoption strategy
 
